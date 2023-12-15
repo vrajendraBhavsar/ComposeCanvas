@@ -397,7 +397,7 @@ fun ConnectionRiddleGame() {
         }
     }
 
-    Canvas(modifier = Modifier
+    /*Canvas(modifier = Modifier
         .fillMaxSize()
         .pointerInput(true) {
             detectDragGestures { change, dragAmount ->
@@ -424,7 +424,7 @@ fun ConnectionRiddleGame() {
                 cap = StrokeCap.Round
             )
         }
-    }
+    }*/
 }
 
 // Function to calculate the center position of a composable
