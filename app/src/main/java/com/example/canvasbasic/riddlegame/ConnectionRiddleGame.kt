@@ -49,7 +49,7 @@ fun ConnectionRiddleGame() {
         )
     }
 
-    val answerList: MutableList<AnswerModel> = remember {
+    var answerList: MutableList<AnswerModel> = remember {
         mutableListOf(
             AnswerModel(globalAnsId = generateGlobalId(), { AnswerCard(text = "Ice Mario") }),
             AnswerModel(globalAnsId = generateGlobalId(), { AnswerCard(text = "Mario") }),
@@ -71,20 +71,8 @@ fun ConnectionRiddleGame() {
         Log.d("TAG", "!@# questionList: $questionList, answerList: $answerList")
     }
 
-    /*if (questionList.size == answerList.size) {
-        val updatedQuestionList = questionList.toMutableList()
-
-        for (index in questionList.indices) {
-            updatedQuestionList[index] = updatedQuestionList[index].copy(associatedAnswerId = answerList[index].globalAnsId)
-        }
-
-        Log.d("TAG", "!@# updatedQuestionList: $updatedQuestionList, answerList: $answerList")
-    }*/
-
-    //Randomizing answer list
-    Log.d("TAG", "!@# answerList: BEFORE:: $answerList")
-    answerList.shuffled()
-    Log.d("TAG", "!@# answerList: AFTER:: $answerList")
+    //Shuffling the answer list
+    answerList = answerList.shuffled().toMutableList()
 
     //Column UI
     LazyColumn {
@@ -98,15 +86,7 @@ fun ConnectionRiddleGame() {
                     .padding(16.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                // Left side (Question)
-//                QuestionCard(questionItem)
                 questionItem.composable.invoke()
-
-                // Spacer between Question and Answer
-//                Spacer(modifier = Modifier.width(16.dp))
-
-                // Right side (Answer)
-//                AnswerCard(answerItem)
                 answerItem.composable.invoke()
             }
         }
@@ -142,32 +122,6 @@ fun QuestionCard(@DrawableRes imageResource: Int) {
     }
 }
 
-/*@Composable
-fun QuestionCard(@DrawableRes imageResource: Int) {
-    Card(
-        modifier = Modifier
-            .size(100.dp)
-            .shadow(1.dp),
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
-    ) {
-        Box(
-            modifier = Modifier
-                .clip(RoundedCornerShape(16.dp)),
-            contentAlignment = Alignment.Center
-        ) {
-            Image(
-                painter = painterResource(id = imageResource),
-                contentDescription = null,
-                modifier = Modifier
-                    .clip(RoundedCornerShape(16.dp))
-                    .align(Alignment.Center),
-                contentScale = ContentScale.Fit
-            )
-        }
-    }
-}*/
-
 @Composable
 fun AnswerCard(text: String) {
     Card(
@@ -197,56 +151,3 @@ fun AnswerCard(text: String) {
         }
     }
 }
-
-/*@Composable
-fun AnswerCard(text: String) {
-    Card(
-        modifier = Modifier
-            .size(100.dp)
-            .shadow(1.dp),
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
-    ) {
-        Box(
-            modifier = Modifier
-                .clip(RoundedCornerShape(16.dp))
-                .background(MaterialTheme.colorScheme.background)
-                .width(IntrinsicSize.Min)
-                .height(IntrinsicSize.Min),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = text,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onBackground,
-                textAlign = TextAlign.Center
-            )
-        }
-    }
-}*/
-
-/*
-@Composable
-fun AnswerCard(text: String) {
-    Card(
-        modifier = Modifier
-            .size(100.dp)
-            .shadow(1.dp),
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
-    ) {
-        Box(
-            modifier = Modifier
-                .clip(RoundedCornerShape(16.dp))
-                .background(MaterialTheme.colorScheme.background),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = text,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onBackground,
-                textAlign = TextAlign.Center
-            )
-        }
-    }
-}*/
