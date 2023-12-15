@@ -7,7 +7,7 @@ import androidx.compose.ui.unit.dp
 
 data class Line(
     val start: Offset,
-    val end:Offset,
+    var end:Offset,
     val color: Color = Color.Black,
     val strokeWidth: Dp = 1.dp
 )
