@@ -8,11 +8,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
@@ -33,31 +38,86 @@ fun ConnectionRiddleGame() {
     val ansRectList = remember { mutableStateListOf<Rect>() }
     ansRectList.clear()
 
+    var startOffset by remember { mutableStateOf(Offset.Zero) }
+    var endOffset by remember { mutableStateOf(Offset.Zero) }
+
     var questionList: MutableList<QuestionModel> = remember {
         mutableListOf(
             QuestionModel(
-                globalQueId = generateGlobalId(),
-                { QuestionCard(R.drawable.ic_ice_mario, queRectList) }),
-            QuestionModel(globalQueId = generateGlobalId(), { QuestionCard(
-                R.drawable.ic_mario,
-                queRectList
-            ) }),
+            globalQueId = generateGlobalId(),
+            composable = {
+                QuestionCard(
+                    imageResource = R.drawable.ic_ice_mario,
+                    queRectList = queRectList,
+                    startOffset = { offset ->
+                        Log.d("TAG", "!@# ConnectionRiddleGame: 1 START OFFSET:: $offset")
+                        startOffset = offset
+                    }
+                )
+            }
+        ),
             QuestionModel(
                 globalQueId = generateGlobalId(),
-                { QuestionCard(R.drawable.ic_spike_top, queRectList) }),
+                composable = {
+                    QuestionCard(
+                        imageResource = R.drawable.ic_mario,
+                        queRectList = queRectList,
+                        startOffset = { offset ->
+                            Log.d("TAG", "!@# ConnectionRiddleGame: 2 START OFFSET:: $offset")
+                            startOffset = offset
+                        }
+                    )
+                }),
             QuestionModel(
                 globalQueId = generateGlobalId(),
-                { QuestionCard(R.drawable.ic_toadette, queRectList) })
+                composable = {
+                    QuestionCard(
+                        imageResource = R.drawable.ic_spike_top,
+                        queRectList = queRectList,
+                        startOffset = { offset ->
+                            Log.d("TAG", "!@# ConnectionRiddleGame: 3 START OFFSET:: $offset")
+                            startOffset = offset
+                        }
+                    )
+                }),
+            QuestionModel(
+                globalQueId = generateGlobalId(),
+                composable = {
+                    QuestionCard(
+                        imageResource = R.drawable.ic_toadette,
+                        queRectList = queRectList,
+                        startOffset = { offset ->
+                            Log.d("TAG", "!@# ConnectionRiddleGame: 4 START OFFSET:: $offset")
+                            startOffset = offset
+                        }
+                    )
+                }
+            )
         )
     }
 
     var answerList: MutableList<AnswerModel> = remember {
-        mutableListOf(
-            AnswerModel(globalAnsId = generateGlobalId(), { AnswerCard(text = "Ice Mario", ansRectList) }),
-            AnswerModel(globalAnsId = generateGlobalId(), { AnswerCard(text = "Mario", ansRectList) }),
-            AnswerModel(globalAnsId = generateGlobalId(), { AnswerCard(text = "Spike top", ansRectList) }),
-            AnswerModel(globalAnsId = generateGlobalId(), { AnswerCard(text = "Toadette", ansRectList) })
-        )
+        mutableListOf(AnswerModel(globalAnsId = generateGlobalId()) {
+            AnswerCard(text = "Ice Mario", ansRectList, endOffset) { updatedEndOffset ->
+                Log.d("TAG", "!@# ConnectionRiddleGame:updated End OFFSET 1:: $updatedEndOffset")
+                endOffset = updatedEndOffset
+            }
+        }, AnswerModel(globalAnsId = generateGlobalId()) {
+            AnswerCard(text = "Mario", ansRectList, endOffset) { updatedEndOffset ->
+                Log.d("TAG", "!@# ConnectionRiddleGame:updated End OFFSET 2:: $updatedEndOffset")
+                endOffset = updatedEndOffset
+            }
+        }, AnswerModel(globalAnsId = generateGlobalId()) {
+            AnswerCard(text = "Spike top", ansRectList, endOffset) { updatedEndOffset ->
+                Log.d("TAG", "!@# ConnectionRiddleGame:updated End OFFSET 3:: $updatedEndOffset")
+                endOffset = updatedEndOffset
+            }
+        }, AnswerModel(globalAnsId = generateGlobalId()) {
+            AnswerCard(text = "Toadette", ansRectList, endOffset) { updatedEndOffset ->
+                Log.d("TAG", "!@# ConnectionRiddleGame:updated End OFFSET 4:: $updatedEndOffset")
+                endOffset = updatedEndOffset
+            }
+        })
     }
 
     val lines = remember { mutableStateListOf<Line>() }
@@ -87,25 +147,32 @@ fun ConnectionRiddleGame() {
                     //Change -> Shows where the finger is right now
                     //DragAmount -> Initial position of a finger and last position
                     change.consume()    //Make sure to consume the event
+                    Log.d("TAG", "!@# LazyColumn: dragAmount:: $dragAmount, change:: $change")
+                    /*val line = Line(
+                    start = change.position - dragAmount, end = change.position, strokeWidth = 5.dp
+                )
+                lines.add(line)*/
 
-                    val line = Line(
-                        start = change.position - dragAmount,
-                        end = change.position,
-                        strokeWidth = 5.dp
-                    )
-                    lines.add(line)
+                    endOffset = change.position
                 }
             }
             .drawBehind {
-                lines.forEach { line ->
+                /*lines.forEach { line ->
                     drawLine(
                         color = line.color,
-                        start = line.start,
-                        end = line.end,
+                        start = startOffset,
+                        end = endOffset,
                         strokeWidth = line.strokeWidth.toPx(),
                         cap = StrokeCap.Round
                     )
-                }
+                }*/
+                drawLine(
+                    color = Color.Black,
+                    start = startOffset,
+                    end = endOffset,
+                    strokeWidth = 5.dp.toPx(),
+                    cap = StrokeCap.Round
+                )
             }
     ) {
         items(questionList.size) { index ->
