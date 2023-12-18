@@ -1,11 +1,9 @@
 package com.example.canvasbasic.riddlegame
 
 import android.util.Log
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -14,6 +12,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
@@ -27,27 +26,37 @@ import com.example.canvasbasic.riddlegame.util.generateGlobalId
 
 @Composable
 fun ConnectionRiddleGame() {
+
+    val queRectList = remember { mutableStateListOf<Rect>() }
+    queRectList.clear()
+
+    val ansRectList = remember { mutableStateListOf<Rect>() }
+    ansRectList.clear()
+
     var questionList: MutableList<QuestionModel> = remember {
         mutableListOf(
             QuestionModel(
                 globalQueId = generateGlobalId(),
-                { QuestionCard(R.drawable.ic_ice_mario) }),
-            QuestionModel(globalQueId = generateGlobalId(), { QuestionCard(R.drawable.ic_mario) }),
+                { QuestionCard(R.drawable.ic_ice_mario, queRectList) }),
+            QuestionModel(globalQueId = generateGlobalId(), { QuestionCard(
+                R.drawable.ic_mario,
+                queRectList
+            ) }),
             QuestionModel(
                 globalQueId = generateGlobalId(),
-                { QuestionCard(R.drawable.ic_spike_top) }),
+                { QuestionCard(R.drawable.ic_spike_top, queRectList) }),
             QuestionModel(
                 globalQueId = generateGlobalId(),
-                { QuestionCard(R.drawable.ic_toadette) })
+                { QuestionCard(R.drawable.ic_toadette, queRectList) })
         )
     }
 
     var answerList: MutableList<AnswerModel> = remember {
         mutableListOf(
-            AnswerModel(globalAnsId = generateGlobalId(), { AnswerCard(text = "Ice Mario") }),
-            AnswerModel(globalAnsId = generateGlobalId(), { AnswerCard(text = "Mario") }),
-            AnswerModel(globalAnsId = generateGlobalId(), { AnswerCard(text = "Spike top") }),
-            AnswerModel(globalAnsId = generateGlobalId(), { AnswerCard(text = "Toadette") })
+            AnswerModel(globalAnsId = generateGlobalId(), { AnswerCard(text = "Ice Mario", ansRectList) }),
+            AnswerModel(globalAnsId = generateGlobalId(), { AnswerCard(text = "Mario", ansRectList) }),
+            AnswerModel(globalAnsId = generateGlobalId(), { AnswerCard(text = "Spike top", ansRectList) }),
+            AnswerModel(globalAnsId = generateGlobalId(), { AnswerCard(text = "Toadette", ansRectList) })
         )
     }
 
