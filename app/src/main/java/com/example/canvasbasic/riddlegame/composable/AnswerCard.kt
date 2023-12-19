@@ -16,12 +16,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.boundsInRoot
@@ -30,23 +28,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun AnswerCard(text: String, ansRectList: SnapshotStateList<Rect>, endOffset: Offset,  updatedEndOffset: (Offset) -> Unit) {
-    var rect: Rect? by remember { mutableStateOf(null) }
+fun AnswerCard(text: String, endOffsetToVerify: Offset, updatedEndOffset: (Offset) -> Unit) {
     var ansOffset: Offset by remember { mutableStateOf(Offset.Unspecified) }
-    var isDraggingOver: Boolean by remember { mutableStateOf(false) }
-
     var ansLiveOffset: Offset by remember { mutableStateOf(Offset.Unspecified) }
 
     Card(
         modifier = Modifier
             .size(100.dp)
             .onGloballyPositioned { layoutCoordinates ->
-                Log.d("TAG", "!@# AnswerCard: ${layoutCoordinates.boundsInRoot()}")
-                rect = layoutCoordinates.boundsInRoot()
-                ansRectList.add(layoutCoordinates.boundsInRoot())
-
-                val isIn: Boolean = layoutCoordinates.boundsInRoot().contains(endOffset)
-                Log.d("TAG", "!@# AnswerCard: is dragging In:: $isIn")
+                val isIn: Boolean = layoutCoordinates
+                    .boundsInRoot()
+                    .contains(endOffsetToVerify)
+                Log.d("TAG", "!@# AnswerCard: is dragging In:: $isIn, name:: $text")
 
                 if (isIn) {
                     ansOffset = layoutCoordinates.boundsInRoot().centerLeft
@@ -54,37 +47,6 @@ fun AnswerCard(text: String, ansRectList: SnapshotStateList<Rect>, endOffset: Of
                 }
             }
             .pointerInput(Unit) {
-                /*detectTapGestures(
-                    onPress = {
-                        Log.d("TAG", "!@# ansOffset ==> $ansOffset")
-                    },
-                )*/
-                /*detectDragGestures { change, dragAmount ->
-                    Log.d("TAG", "!@# ansOffset ==> $ansOffset")
-                }*/
-                /*detectTransformGestures { centroid, pan, zoom, rotation ->
-                    Log.d("TAG", "!@# Dragging ONLY: $text")
-
-                    val touchPosition = pan + ansOffset
-                    isDraggingOver = rect?.contains(touchPosition) == true
-
-                    if (isDraggingOver) {
-                        // Dragging over the AnswerCard
-                        Log.d("TAG", "!@# Dragging over AnswerCard: $text")
-                    }
-                }*/
-
-                /*detectTransformGestures { centroid, pan, zoom, rotation ->
-                    Log.d("TAG", "!@# Dragging ONLY: $text")
-
-                    ansLiveOffset = pan + ansOffset
-                }*/
-
-                /*detectDragGestures { change, dragAmount ->
-                    Log.d("TAG", "!@# change ==> ${change.position}")
-                    ansLiveOffset = change.position
-                }*/
-
                 detectDragGesturesAfterLongPress(onDragStart = {
                     Log.d("TAG", "!@# detectDragGesturesAfterLongPress offset ==> $it")
 

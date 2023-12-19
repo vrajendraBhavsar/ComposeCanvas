@@ -1,10 +1,8 @@
 package com.example.canvasbasic.riddlegame.data
 
-import androidx.compose.runtime.Composable
-
-/*data class AnswerModel(
-    val key: String,
-    val text: String
-)*/
-
-data class AnswerModel(val globalAnsId: String, val composable: @Composable () -> Unit)
+import androidx.compose.ui.geometry.Offset
+data class AnswerModel(
+    val globalAnsId: String,
+    val text: String,
+    var updatedEndOffset: Offset = Offset.Zero,
+)

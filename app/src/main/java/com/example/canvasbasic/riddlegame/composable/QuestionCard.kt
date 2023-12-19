@@ -15,12 +15,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
@@ -31,18 +29,13 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun QuestionCard(
-    @DrawableRes imageResource: Int, queRectList: SnapshotStateList<Rect>, startOffset: (Offset) -> Unit
+    @DrawableRes imageResource: Int, globalQueId: String = "", startOffset: (Offset) -> Unit
 ) {
-    var rect: Rect? by remember { mutableStateOf(null) }
     var queOffset: Offset by remember { mutableStateOf(Offset.Unspecified) }
-
     Card(modifier = Modifier
         .size(100.dp)
         .onGloballyPositioned { layoutCoordinates ->
-            Log.d("TAG", "!@# AnswerCard: ${layoutCoordinates.boundsInRoot()}")
-            rect = layoutCoordinates.boundsInRoot()
-            queRectList.add(layoutCoordinates.boundsInRoot())
-
+            Log.d("TAG", "!@# QuestionCard: ${layoutCoordinates.boundsInRoot()}")
             queOffset = layoutCoordinates.boundsInRoot().centerRight
         }
         .pointerInput(Unit) {
@@ -50,6 +43,7 @@ fun QuestionCard(
                 onPress = {
                     Log.d("TAG", "!@# queOffset ==> $queOffset")
                     Log.d("TAG", "!@# x ==> ${it.x}, y ==> ${it.y}")
+                    Log.d("TAG", "!@# QuestionCard: globalQueId ==> $globalQueId")
                     startOffset(queOffset)
                 },
             )
